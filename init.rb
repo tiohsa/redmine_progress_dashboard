@@ -8,7 +8,6 @@ Redmine::Plugin.register :redmine_progress_dashboard do
   version '0.0.1'
   url 'https://github.com/tiohsa/redmain_dashboard'
   author_url 'https://github.com/tiohsa'
-  license 'GPL v2'
 
   project_module :progress_dashboard do
     permission :view_dashboard, { dashboard: [:show, :index, :data] }
