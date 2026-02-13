@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: redmine
+      POSTGRES_USER: redmine
+      POSTGRES_PASSWORD: redmine
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U redmine -d redmine"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redmine:
+    image: redmine:5.1
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3002:3000"
+    environment:
+      REDMINE_DB_POSTGRES: db
+      REDMINE_DB_DATABASE: redmine
+      REDMINE_DB_USERNAME: redmine
+      REDMINE_DB_PASSWORD: redmine
+      REDMINE_SECRET_KEY_BASE: e2e-secret-key-base
+    volumes:
+      - ../..:/usr/src/redmine/plugins/redmine_progress_dashboard

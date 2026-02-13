@@ -1,0 +1,10 @@
+{
+  "name": "redmine-progress-dashboard-e2e",
+  "private": true,
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.1"
+  }
+}
