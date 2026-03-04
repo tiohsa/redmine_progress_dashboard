@@ -101,9 +101,13 @@ const DEFAULT_PANEL_ORDER = [
 // PANEL_LABELS moved to dynamic labels from backend
 
 function App({ projectId }: Props) {
-  const STORAGE_KEY = `dashboard_projects_${projectId}`;
-  const LAYOUT_STORAGE_KEY = `dashboard_panel_order_${projectId}_v1`;
-  const VISIBILITY_STORAGE_KEY = `dashboard_panel_visibility_${projectId}_v1`;
+  const STORAGE_KEY = `redmine_progress_dashboard:dashboard_projects_${projectId}`;
+  const LAYOUT_STORAGE_KEY = `redmine_progress_dashboard:dashboard_panel_order_${projectId}_v1`;
+  const VISIBILITY_STORAGE_KEY = `redmine_progress_dashboard:dashboard_panel_visibility_${projectId}_v1`;
+
+  const readStorage = (key: string): string | null => {
+    return localStorage.getItem(key);
+  };
 
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -122,7 +126,7 @@ function App({ projectId }: Props) {
   }, []);
 
   const [panelOrder, setPanelOrder] = useState<string[]>(() => {
-    const saved = localStorage.getItem(LAYOUT_STORAGE_KEY);
+    const saved = readStorage(LAYOUT_STORAGE_KEY);
     if (saved) {
       const savedOrder = JSON.parse(saved) as string[];
       // Add any new panels from default that are missing in saved order
@@ -133,7 +137,7 @@ function App({ projectId }: Props) {
   });
 
   const [visiblePanels, setVisiblePanels] = useState<Record<string, boolean>>(() => {
-    const saved = localStorage.getItem(VISIBILITY_STORAGE_KEY);
+    const saved = readStorage(VISIBILITY_STORAGE_KEY);
     // Start with all panels visible by default
     const defaults = DEFAULT_PANEL_ORDER.reduce((acc, id) => ({ ...acc, [id]: true }), {} as Record<string, boolean>);
     if (saved) {
@@ -174,12 +178,12 @@ function App({ projectId }: Props) {
 
   // Initialize from LocalStorage if available
   const [targetProjectIds, setTargetProjectIds] = useState<number[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = readStorage(STORAGE_KEY);
     return saved ? JSON.parse(saved) : [];
   });
 
   // Track if we have initialized from data (for first load case)
-  const [isInitialized, setIsInitialized] = useState(() => !!localStorage.getItem(STORAGE_KEY));
+  const [isInitialized, setIsInitialized] = useState(() => !!readStorage(STORAGE_KEY));
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [analysisText, setAnalysisText] = useState<string | null>(null);
